@@ -1,29 +1,27 @@
 import processing.core.PApplet;
 
 public class bird {
-    private int x;
-    private int y;
+    private float x;
+    private float y;
     private PApplet canvas;
-    private int speed;
-    private int color;
-    private int size;
+    private float vy; // vertical velocity because basically I needed to know how to to make it so the
+                      // bird moves up and down
 
-    public bird(int xPos, int yPos, PApplet c) {
+    private float jumpStrength; // this is just like vy but negitive so it makes you more up instead of down so
+                                // more times you click bigger the jump
+
+    private float gravity; // Thank you Dr. Moden's youtube channel for ur help on this
+    private float size;
+
+    // makes the birds starter place
+    public bird(float xPos, float yPos, PApplet c) {
         x = xPos;
         y = yPos;
         canvas = c;
-        speed = 5;
-        size = 250;
-
-    }
-
-    public bird(String line, PApplet c) {
-        String[] parts = line.split(",");
-        x = Integer.valueOf(parts[0]);
-        y = Integer.valueOf(parts[1]);
-        speed = Integer.valueOf(parts[2]);
-        canvas = c;
-        size = 250;
+        size = 40;
+        gravity = 0.8f; // btw f just means that this is a float
+        jumpStrength = 12;
+        vy = 0;
 
     }
 
@@ -33,23 +31,31 @@ public class bird {
 
     }
 
+    // updating where the bird is using the vy and gravity
     public void update() {
-        x += speed;
-        if (x + size / 2 > canvas.width || x - size / 2 < 0) {
-            speed = -speed;
-
-        }
+        vy += gravity;
+        y += vy;
 
     }
 
-    public boolean checkTouch(int mouseX, int mouseY) {
-        float distanceFromCenter = canvas.dist(x, y, mouseX, mouseY);
-        if (distanceFromCenter < size / 2) {
-            // remove but figure out how
-            return false;
-        }
-        else{
-            return true;
-        }
+    public void flap() {
+        vy = -jumpStrength; // jump up
     }
+
+    public boolean hitsWall() {
+        return (y - size / 2 < 0 || y + size / 2 > canvas.height);
+    }
+
+    public float getX() {
+        return x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public float getRadius() {
+        return size / 2;
+    }
+
 }
